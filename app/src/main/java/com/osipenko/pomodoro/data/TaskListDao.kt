@@ -12,8 +12,8 @@ interface TaskListDao {
     suspend fun getTaskItem(itemId: Int): TaskItemDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addTaskItem(item: TaskItemDbModel): TaskItemDbModel
+    suspend fun addTaskItem(item: TaskItemDbModel)
 
     @Query("DELETE FROM task_items WHERE id=:itemId")
-    suspend fun deleteTaskItem(itemId: Int): TaskItemDbModel
+    suspend fun deleteTaskItem(itemId: Int)
 }

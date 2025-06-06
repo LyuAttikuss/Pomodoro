@@ -8,6 +8,8 @@ import androidx.room.RoomDatabase
 @Database(entities = [TaskItemDbModel::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
+    abstract fun taskListDao(): TaskListDao
+
     companion object {
 
         private var INSTANCE: AppDatabase? = null

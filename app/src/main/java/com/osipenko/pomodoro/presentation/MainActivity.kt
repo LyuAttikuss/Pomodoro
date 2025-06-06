@@ -5,11 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -28,26 +28,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PomodoroTheme {
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    item {
-                        CardItem(
-                            text = "Android",
-                            modifier = Modifier.padding(24.dp)
+                    CardItem(
+                        text = "Android",
+                        modifier = Modifier.padding(24.dp)
+                    )
+                    Button(
+                        onClick = { }
+                    ) {
+                        Text(
+                            text = "Add task"
                         )
-                    }
-                    item {
-                        Button(
-                            onClick = { }
-                        ) {
-                            Text(
-                                text = "Add task"
-                            )
-                        }
                     }
                 }
             }

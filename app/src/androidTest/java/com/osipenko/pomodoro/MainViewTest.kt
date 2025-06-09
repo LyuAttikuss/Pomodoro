@@ -1,7 +1,10 @@
 package com.osipenko.pomodoro
 
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.osipenko.pomodoro.presentation.MainActivity
 import org.junit.Rule
@@ -21,6 +24,12 @@ class MainViewTest {
 
     @Test
     fun test_button() {
-        composeTestRule.onNodeWithText("Add task").assertExists()
+        composeTestRule.apply {
+            // onNodeWithTag("taskItemText").assertExists()
+            onNodeWithTag("addTaskButton").assertExists()
+            onNodeWithTag("addTaskButton").assertHasClickAction()
+            onNodeWithTag("addTaskButton").performClick()
+            // открыть окно создания задачи
+        }
     }
 }

@@ -18,10 +18,10 @@ interface DataModule {
 
     companion object {
 
-        @Provides
-        @ApplicationScope
-        fun provideTaskListDao(application: Application): TaskListDao {
-            return AppDatabase.getInstance(application).taskListDao()
-        }
+//        @Provides
+//        @ApplicationScope
+//        fun provideTaskListDao(application: Application): TaskListDao {
+//            return AppDatabase.getInstance(application).taskListDao()
+//        }
     }
 }

@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -73,11 +74,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.testing)
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp(libs.androidx.room.compiler)
+
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-    kapt(libs.dagger.android.processor)
+    ksp(libs.dagger.compiler)
+    ksp(libs.dagger.android.processor)
 }

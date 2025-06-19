@@ -9,11 +9,11 @@ import androidx.room.Query
 interface TaskListDao {
 
     @Query("SELECT * FROM task_items WHERE id=:itemId LIMIT 1")
-    suspend fun getTaskItem(itemId: Int): TaskItemDbModel
+    suspend fun getTaskItem(itemId: Long): TaskItemEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addTaskItem(item: TaskItemDbModel)
+    suspend fun addTaskItem(item: TaskItemEntity)
 
     @Query("DELETE FROM task_items WHERE id=:itemId")
-    suspend fun deleteTaskItem(itemId: Int)
+    suspend fun deleteTaskItem(itemId: Long)
 }

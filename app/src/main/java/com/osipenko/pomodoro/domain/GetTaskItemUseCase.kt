@@ -6,7 +6,7 @@ class GetTaskItemUseCase @Inject constructor(
     private val pomodoroRepository: PomodoroRepository
 ) {
 
-    suspend fun getTaskItem(id: Int) {
+    suspend fun getTaskItem(id: Long) {
         pomodoroRepository.getTaskItem(id)
     }
 }

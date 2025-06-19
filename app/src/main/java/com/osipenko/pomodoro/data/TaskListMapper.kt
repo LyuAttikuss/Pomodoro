@@ -5,13 +5,13 @@ import javax.inject.Inject
 
 class TaskListMapper @Inject constructor() {
 
-    fun mapEntityToDbModel(taskItem: TaskItem) = TaskItemDbModel(
+    fun mapEntityToDbModel(taskItem: TaskItem) = TaskItemEntity(
         id = taskItem.id,
         text = taskItem.text
     )
 
-    fun mapDbModelToEntity(taskItemDbModel: TaskItemDbModel) = TaskItem(
-        id = taskItemDbModel.id,
-        text = taskItemDbModel.text
+    fun mapDbModelToEntity(taskItemEntity: TaskItemEntity) = TaskItem(
+        id = taskItemEntity.id,
+        text = taskItemEntity.text
     )
 }

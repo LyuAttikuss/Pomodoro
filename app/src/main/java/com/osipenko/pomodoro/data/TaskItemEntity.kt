@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "task_items")
-data class TaskItemDbModel(
+data class TaskItemEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Long,
     val text: String
 )

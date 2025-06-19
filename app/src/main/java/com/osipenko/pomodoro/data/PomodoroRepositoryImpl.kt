@@ -21,7 +21,7 @@ class PomodoroRepositoryImpl @Inject constructor(
         taskListDao.addTaskItem(mapper.mapEntityToDbModel(item))
     }
 
-    override suspend fun getTaskItem(id: Int): TaskItem {
+    override suspend fun getTaskItem(id: Long): TaskItem {
         val taskItemDbModel = taskListDao.getTaskItem(id)
         return mapper.mapDbModelToEntity(taskItemDbModel)
     }

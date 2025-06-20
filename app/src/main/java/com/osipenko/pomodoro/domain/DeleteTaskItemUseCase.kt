@@ -3,10 +3,10 @@ package com.osipenko.pomodoro.domain
 import javax.inject.Inject
 
 class DeleteTaskItemUseCase @Inject constructor(
-    private val pomodoroRepository: PomodoroRepository
+    private val taskListRepository: TaskListRepository
 ) {
 
     suspend fun deleteTaskItem(item: TaskItem) {
-        pomodoroRepository.deleteTaskItem(item)
+        taskListRepository.deleteTaskItem(item)
     }
 }

@@ -3,10 +3,10 @@ package com.osipenko.pomodoro.domain
 import javax.inject.Inject
 
 class GetTaskItemUseCase @Inject constructor(
-    private val pomodoroRepository: PomodoroRepository
+    private val taskListRepository: TaskListRepository
 ) {
 
     suspend fun getTaskItem(id: Long) {
-        pomodoroRepository.getTaskItem(id)
+        taskListRepository.getTaskItem(id)
     }
 }

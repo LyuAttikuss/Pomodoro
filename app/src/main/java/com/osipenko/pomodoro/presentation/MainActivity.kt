@@ -40,10 +40,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.osipenko.pomodoro.R
 import com.osipenko.pomodoro.ui.theme.PomodoroTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,63 +54,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PomodoroTheme {
-                val sheetState = rememberModalBottomSheetState()
-                val scope = rememberCoroutineScope()
-                var showBottomSheet by remember { mutableStateOf(false) }
-                Scaffold(
-                    topBar = { TopBar() },
-                    floatingActionButton = {
-                        ExtendedFloatingActionButton(
-                            text = { Text("Add task") },
-                            icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-                            onClick = {
-                                showBottomSheet = true
-                            }
-                        )
-                    }
-                ) { contentPadding ->
-                    TaskListView(contentPadding)
-
-                    if (showBottomSheet) {
-                        ModalBottomSheet(
-                            onDismissRequest = {
-                                showBottomSheet = false
-                            },
-                            sheetState = sheetState
-                        ) {
-                            var text by remember { mutableStateOf("") }
-                            BasicTextField(
-                                value = text,
-                                onValueChange = { text = it },
-                                modifier = Modifier
-                                    .padding(all = 16.dp)
-                                    .fillMaxWidth()
-                                    .height(100.dp)
-                                    .border(1.dp, Color.Gray)
-                                    .padding(8.dp),
-                                singleLine = false,
-                                minLines = 3,
-                                maxLines = 10
-                            )
-
-                            Button(
-                                enabled = text.isNotBlank(),
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .align(Alignment.End),
-                                onClick = {
-                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                        if (!sheetState.isVisible) {
-                                            showBottomSheet = false
-                                        }
-                                    }
-                                }
-                            ) {
-                                Text("Create task")
-                            }
-                        }
-                    }
-                }
+                addTaskItem()
 
 
 //                Column(
@@ -150,6 +97,77 @@ class MainActivity : ComponentActivity() {
 
                     //addTaskBottomSheet()
                // }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun addTaskItem(
+    onFinish: () -> Unit,
+    onComplete: () -> Unit
+) {
+    val viewModel: AddTaskViewModel = hiltViewModel()
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    Scaffold(
+        topBar = { TopBar() },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { Text("Add task") },
+                icon = { Icon(Icons.Filled.Add, contentDescription = "") },
+                onClick = {
+                    showBottomSheet = true
+                    onFinish()
+                }
+            )
+        }
+    ) { contentPadding ->
+        TaskListView(contentPadding)
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
+                sheetState = sheetState
+            ) {
+                var text by remember { mutableStateOf("") }
+                BasicTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .border(1.dp, Color.Gray)
+                        .padding(8.dp),
+                    singleLine = false,
+                    minLines = 3,
+                    maxLines = 10
+                )
+
+                Button(
+                    enabled = text.isNotBlank(),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.End),
+                    onClick = {
+                        viewModel.add(text) {
+                            onComplete()
+                            onFinish()
+                            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                if (!sheetState.isVisible) {
+                                    showBottomSheet = false
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    Text("Create task")
+                }
             }
         }
     }

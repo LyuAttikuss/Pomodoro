@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskListDao {
@@ -12,7 +13,7 @@ interface TaskListDao {
     suspend fun getTaskItem(itemId: Long): TaskItemEntity
 
     @Query("SELECT * FROM task_items")
-    suspend fun getTaskList(): List<TaskItemEntity>
+    fun getTaskList(): Flow<List<TaskItemEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTaskItem(item: TaskItemEntity)

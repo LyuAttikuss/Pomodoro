@@ -7,6 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 interface CacheModule {
+
     fun dao(): TaskListDao
 
     class Base @Inject constructor(@ApplicationContext applicationContext: Context): CacheModule {

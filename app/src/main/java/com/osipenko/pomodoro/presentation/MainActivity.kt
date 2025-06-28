@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +45,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.osipenko.pomodoro.R
 import com.osipenko.pomodoro.ui.theme.PomodoroTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,14 +53,37 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PomodoroTheme {
-                addTaskItem()
+                var showBottomSheet by remember { mutableStateOf(false) }
+                Scaffold(
+                    topBar = { TopBar() },
+                    floatingActionButton = {
+                        ExtendedFloatingActionButton(
+                            text = { Text("Add task") },
+                            icon = { Icon(Icons.Filled.Add, contentDescription = "") },
+                            onClick = {
+                                showBottomSheet = true
+                                //onFinish()
+                            }
+                        )
+                    }
+                ) { contentPadding ->
+                    TaskListView(contentPadding)
 
+                    if (showBottomSheet) {
+                        addTaskItem(
+                            onDismiss = {
+                                showBottomSheet = false
+                            },
+                            onComplete = {}
+                        )
+                    }
+                }
 
 //                Column(
 //                    modifier = Modifier
@@ -105,70 +133,55 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun addTaskItem(
-    onFinish: () -> Unit,
+    onDismiss: () -> Unit,
     onComplete: () -> Unit
 ) {
     val viewModel: AddTaskViewModel = hiltViewModel()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    Scaffold(
-        topBar = { TopBar() },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { Text("Add task") },
-                icon = { Icon(Icons.Filled.Add, contentDescription = "") },
-                onClick = {
-                    showBottomSheet = true
-                    onFinish()
-                }
-            )
-        }
-    ) { contentPadding ->
-        TaskListView(contentPadding)
 
-        if (showBottomSheet) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
-                sheetState = sheetState
-            ) {
-                var text by remember { mutableStateOf("") }
-                BasicTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier
-                        .padding(all = 16.dp)
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .border(1.dp, Color.Gray)
-                        .padding(8.dp),
-                    singleLine = false,
-                    minLines = 3,
-                    maxLines = 10
-                )
+    val close = viewModel.state.collectAsStateWithLifecycle().value
 
-                Button(
-                    enabled = text.isNotBlank(),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .align(Alignment.End),
-                    onClick = {
-                        viewModel.add(text) {
-                            onComplete()
-                            onFinish()
-                            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                if (!sheetState.isVisible) {
-                                    showBottomSheet = false
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    Text("Create task")
+    if (close) {
+        LaunchedEffect(true) {
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                if (!sheetState.isVisible) {
+                    onComplete()
+                    onDismiss()
                 }
             }
+        }
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState
+    ) {
+        var text by remember { mutableStateOf("") }
+        BasicTextField(
+            value = text,
+            onValueChange = { text = it },
+            modifier = Modifier
+                .padding(all = 16.dp)
+                .fillMaxWidth()
+                .height(100.dp)
+                .border(1.dp, Color.Gray)
+                .padding(8.dp),
+            singleLine = false,
+            minLines = 3,
+            maxLines = 10
+        )
+
+        Button(
+            enabled = text.isNotBlank(),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .align(Alignment.End),
+            onClick = {
+                viewModel.add(text)
+            }
+        ) {
+            Text("Create task")
         }
     }
 }
@@ -185,7 +198,19 @@ fun TopBar() {
 
 @Composable
 fun TaskListView(paddingValues: PaddingValues) {
+    val viewModel: TaskListViewModel = hiltViewModel()
+    val data = viewModel.state.collectAsStateWithLifecycle(State.Initial).value
 
+    when (data) {
+        is State.Content -> {
+            LazyColumn {
+                items(data.taskList) {
+                    Text(text = it)
+                }
+            }
+        }
+        else -> {}
+    }
 }
 
 @Composable

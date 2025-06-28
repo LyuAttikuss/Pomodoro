@@ -1,17 +1,21 @@
 package com.osipenko.pomodoro.domain
 
-import com.osipenko.pomodoro.data.TaskItemEntity
 import com.osipenko.pomodoro.data.TaskListDao
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface TaskListRepository {
 
-    suspend fun taskList(): List<TaskItemEntity>
+    val taskList: Flow<List<String>>
 
     class Base @Inject constructor(
         private val dao: TaskListDao
     ): TaskListRepository {
 
-        override suspend fun taskList() = dao.getTaskList()
+        override val taskList = dao.getTaskList()
+            .map { list ->
+                list.map { it.text }
+            }
     }
 }

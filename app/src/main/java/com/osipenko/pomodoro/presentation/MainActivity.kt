@@ -5,16 +5,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -39,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.osipenko.pomodoro.R
@@ -53,6 +65,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: AddTaskViewModel = hiltViewModel()
+            val timerValue = viewModel.timerValue.collectAsStateWithLifecycle().value
+
             PomodoroTheme {
                 var showBottomSheet by remember { mutableStateOf(false) }
                 Scaffold(
@@ -75,7 +90,9 @@ class MainActivity : ComponentActivity() {
                             onDismiss = {
                                 showBottomSheet = false
                             },
-                            onComplete = {}
+                            onComplete = {
+                                viewModel.startTimer()
+                            }
                         )
                     }
                 }
@@ -153,16 +170,66 @@ fun TopBar() {
 @Composable
 fun TaskListView(paddingValues: PaddingValues) {
     val viewModel: TaskListViewModel = hiltViewModel()
+    val addViewModel: AddTaskViewModel = hiltViewModel()
     val data = viewModel.state.collectAsStateWithLifecycle().value
+    val timerValue = addViewModel.timerValue.collectAsStateWithLifecycle().value
 
     when (data.isNotEmpty()) {
-        true -> LazyColumn {
-            items(data) {
-                Text(text = it)
+        true ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 70.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = data.first(),
+                    modifier = Modifier.padding(24.dp),
+                    fontSize = 40.sp
+                )
+
+                TaskTimer(timerValue)
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    PlayButton {
+                        addViewModel.startTimer()
+                    }
+
+                    StopButton {
+                        addViewModel.stopTimer()
+                    }
+                }
             }
-        }
 
         else -> {}
+    }
+}
+
+@Composable
+fun PlayButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.PlayArrow,
+                contentDescription = "Play"
+            )
+        }
+    }
+}
+
+@Composable
+fun StopButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.Clear,
+                contentDescription = "Stop"
+            )
+        }
     }
 }
 

@@ -71,4 +71,8 @@ class AddTaskViewModel @Inject constructor(
     fun pauseTimer() {
         countDownTimer.cancel()
     }
+
+    fun nextPeriodTimer() {
+
+    }
 }

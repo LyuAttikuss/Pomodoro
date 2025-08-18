@@ -67,7 +67,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val viewModel: AddTaskViewModel = hiltViewModel()
-            val timerValue = viewModel.timerValue.collectAsStateWithLifecycle().value
 
             PomodoroTheme {
                 var showBottomSheet by remember { mutableStateOf(false) }
@@ -173,7 +172,7 @@ fun TaskListView(paddingValues: PaddingValues) {
     val viewModel: TaskListViewModel = hiltViewModel()
     val addViewModel: AddTaskViewModel = hiltViewModel()
     val data = viewModel.state.collectAsStateWithLifecycle().value
-    val timerValue = addViewModel.timerValue.collectAsStateWithLifecycle().value
+    val timerState = addViewModel.timerState.collectAsStateWithLifecycle().value
 
     when (data.isNotEmpty()) {
         true ->
@@ -190,7 +189,7 @@ fun TaskListView(paddingValues: PaddingValues) {
                     fontSize = 40.sp
                 )
 
-                TaskTimer(timerValue)
+                TaskTimer(timerState.currentValue)
 
                 DotsIndicator(totalDots = 4, currentIndex = 2)
 
@@ -198,20 +197,27 @@ fun TaskListView(paddingValues: PaddingValues) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    PlayButton {
-                        addViewModel.startTimer()
+
+                    when {
+                        timerState.inProgress -> {
+                            StopButton {
+                                addViewModel.stopTimer()
+                            }
+                            PauseButton {
+                                addViewModel.pauseTimer()
+                            }
+                        }
+                        else -> {
+                            PlayButton {
+                                addViewModel.startTimer()
+                            }
+                        }
                     }
 
-                    StopButton {
-                        addViewModel.stopTimer()
-                    }
-
-                    PauseButton {
-                        addViewModel.pauseTimer()
-                    }
-
-                    NextButton {
-                        addViewModel.nextPeriodTimer()
+                    if (!timerState.isLast) {
+                        NextButton {
+                            addViewModel.nextPeriodTimer()
+                        }
                     }
                 }
             }

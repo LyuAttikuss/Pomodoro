@@ -56,11 +56,17 @@ class ScenarioTest {
 
     private fun startUiTest() {
         val startTimerPage = StartTimerPage(composeTestRule = composeTestRule)
-        startTimerPage.clickStartTimer()
-        startTimerPage.assertProgressIsLoading()
-        startTimerPage.assertCountDownTimerIsRunning()
-        startTimerPage.assertStopDisplayed()
-        startTimerPage.assertPauseDisplayed()
-    }
 
+        startTimerPage.clickStartTimer()
+        startTimerPage.assertTimerIsRunning()
+
+        startTimerPage.clickPauseTimer()
+        startTimerPage.assertTimerOnPause()
+
+        startTimerPage.clickPlayTimer()
+        startTimerPage.assertTimerIsRunning()
+
+        startTimerPage.clickStopTimer()
+        startTimerPage.assertTimerHasStopped()
+    }
 }

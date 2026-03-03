@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 
-class StartTimerPage(private val composeTestRule: ComposeContentTestRule) {
+class TimerPage(private val composeTestRule: ComposeContentTestRule) {
 
     private val timerLoader = composeTestRule.onNodeWithTag("timerLoaderUi")
     private val startButton = composeTestRule.onNodeWithTag("startTimerButton")
@@ -16,7 +16,7 @@ class StartTimerPage(private val composeTestRule: ComposeContentTestRule) {
 
     // TODO: check timer is loading
     fun clickStartTimer() {
-        startButton.performClick()
+        startButton.assertExists().assertHasClickAction().performClick()
     }
 
     fun assertTimerIsRunning() {
@@ -28,7 +28,7 @@ class StartTimerPage(private val composeTestRule: ComposeContentTestRule) {
     }
 
     fun clickPauseTimer() {
-        pauseButton.performClick()
+        pauseButton.assertExists().assertHasClickAction().performClick()
     }
 
     // TODO: check timer is not loading
@@ -41,11 +41,11 @@ class StartTimerPage(private val composeTestRule: ComposeContentTestRule) {
     }
 
     fun clickPlayTimer() {
-        playButton.performClick()
+        playButton.assertExists().assertHasClickAction().performClick()
     }
 
     fun clickStopTimer() {
-        stopButton.performClick()
+        stopButton.assertExists().assertHasClickAction().performClick()
     }
 
     fun assertTimerHasStopped() {

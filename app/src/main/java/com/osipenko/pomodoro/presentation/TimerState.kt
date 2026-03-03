@@ -8,6 +8,7 @@ class TimerState(
     val inProgress: Boolean = false,
     val currentValue: String = WORK_PERIOD_VALUE,
     val currentTimeInMillis: Long = WORK_PERIOD_IN_MILLIS,
+    val currentWorkIndex: Int = 0,
     val isLast: Boolean = false
 ) {
     companion object {

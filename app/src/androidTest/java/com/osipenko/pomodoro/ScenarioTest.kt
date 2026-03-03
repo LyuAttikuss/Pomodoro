@@ -23,7 +23,7 @@ class ScenarioTest {
             val navController: NavHostController = rememberNavController()
             NavHost(navController = navController, startDestination = "startTimerScreen") {
                 composable("startTimerScreen") {
-                    StartTimerScreen(
+                    TimerScreen(
                         viewModel = TimerViewModel(
                             savedStateHandle = SavedStateHandle(),
                             repository = FakeTimerRepository(),
@@ -43,9 +43,12 @@ class ScenarioTest {
             val navController: NavHostController = rememberNavController()
             NavHost(navController = navController, startDestination = "startTimerScreen") {
                 composable("startTimerScreen") {
-                    StartTimerScreenUi(
-                        timerIsRunning = false,
-                        onStopTimerClick = {}
+                    TimerScreenUi(
+                        inProgress = false,
+                        onStopTimerClick = {},
+                        onStartTimerClick = {},
+                        onPauseTimerClick = {},
+                        onPlayTimerClick = {}
                     )
                 }
             }
@@ -55,18 +58,18 @@ class ScenarioTest {
     }
 
     private fun startUiTest() {
-        val startTimerPage = StartTimerPage(composeTestRule = composeTestRule)
+        val timerPage = TimerPage(composeTestRule = composeTestRule)
 
-        startTimerPage.clickStartTimer()
-        startTimerPage.assertTimerIsRunning()
+        timerPage.clickStartTimer()
+        timerPage.assertTimerIsRunning()
 
-        startTimerPage.clickPauseTimer()
-        startTimerPage.assertTimerOnPause()
+        timerPage.clickPauseTimer()
+        timerPage.assertTimerOnPause()
 
-        startTimerPage.clickPlayTimer()
-        startTimerPage.assertTimerIsRunning()
+        timerPage.clickPlayTimer()
+        timerPage.assertTimerIsRunning()
 
-        startTimerPage.clickStopTimer()
-        startTimerPage.assertTimerHasStopped()
+        timerPage.clickStopTimer()
+        timerPage.assertTimerHasStopped()
     }
 }

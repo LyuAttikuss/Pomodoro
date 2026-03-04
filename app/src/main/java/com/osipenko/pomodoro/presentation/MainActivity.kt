@@ -219,32 +219,7 @@ private fun MainContent(innerPadding: PaddingValues) {
 //        )
 //    }
 //}
-//
-//@Composable
-//fun DotsIndicator(
-//    totalDots: Int,
-//    currentIndex: Int,
-//    modifier: Modifier = Modifier
-//) {
-//    LazyRow(modifier = modifier) {
-//        items(totalDots) { index ->
-//            val backgroundColor = when {
-//                currentIndex == index -> Color.Magenta
-//                index < currentIndex -> Color.Black
-//                else -> Color.Gray
-//            }
-//            Box(
-//                modifier = Modifier
-//                    .size(8.dp)
-//                    .clip(CircleShape)
-//                    .background(backgroundColor)
-//            )
-//            if (index < totalDots - 1) {
-//                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-//            }
-//        }
-//    }
-//}
+
 
 @Preview(showBackground = true)
 @Composable

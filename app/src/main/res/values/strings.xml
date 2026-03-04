@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Pomodoro</string>
+    <string name="task_name">Task's title</string>
+    <string name="start">Start</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.Button
 import androidx.glance.layout.Column
 import androidx.glance.text.Text
+import com.osipenko.pomodoro.R
 import java.io.Serializable
 
 @Composable
@@ -134,6 +137,58 @@ fun TimerDotsIndicator(
             if (index < totalDots - 1) {
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun PlayButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_play),
+                contentDescription = "Stop",
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun StopButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_stop),
+                contentDescription = "Stop",
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+//@Composable
+//fun NextButton(onClick: () -> Unit) {
+//    Button(onClick = onClick) {
+//        Row {
+//            Icon(
+//                painter = painterResource(id = R.drawable.icon_play_next),
+//                contentDescription = "Stop",
+//                modifier = Modifier.size(18.dp)
+//            )
+//        }
+//    }
+//}
+
+@Composable
+fun PauseButton(onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_pause),
+                contentDescription = "Stop",
+                modifier = Modifier.size(18.dp)
+            )
         }
     }
 }
